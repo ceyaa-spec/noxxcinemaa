@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>NoX Cinema - Nonton Film Offline Gratis</title>
+    <style>
+        /* ============================================ */
+        /* NOX CINEMA - DARK PURPLE THEME              */
+        /* Nonton Film Offline Gratis Tanpa Iklan      */
+        /* ============================================ */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+            background: #050505;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        /* Animated Purple Gradient Background */
+        .bg-purple {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at 20% 50%, #0a0a0a 0%, #1a0a2e 50%, #0a0a0a 100%);
+        }
+
+        .bg-purple::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(circle, rgba(128,0,255,0.15) 0%, transparent 60%);
+            animation: rotateBg 25s linear infinite;
+        }
+
+        @keyframes rotateBg {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Purple Noise Overlay */
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            pointer-events: none;
+            background: repeating-radial-gradient(circle at 20% 30%, #000, #000 2px, transparent 2px, transparent 4px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(128,0,255,0.3);
+            box-shadow: 0 0 30px rgba(128,0,255,0.2);
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #c084fc, #a855f7, #7c3aed);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(128,0,255,0.5);
+        }
+
+        .logo span {
+            font-size: 2.5rem;
+        }
+
+        .tagline {
+            color: #c084fc;
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .badge {
+            background: rgba(128,0,255,0.2);
+            border: 1px solid rgba(128,0,255,0.5);
+            padding: 6px 15px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            color: #c084fc;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+        }
+
+        /* Video Player Section */
+        .player-section {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid rgba(128,0,255,0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .video-container {
+            position: relative;
+            background: #000;
+            width: 100%;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain;
+        }
+
+        .video-info {
+            padding: 20px;
+            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.9));
+        }
+
+        .video-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #c084fc;
+        }
+
+        .video-meta {
+            display: flex;
+            gap: 20px;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        /* Playlist Section */
+        .playlist-section {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid rgba(128,0,255,0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 600px;
+        }
+
+        .playlist-header {
+            padding: 20px;
+            background: rgba(128,0,255,0.1);
+            border-bottom: 1px solid rgba(128,0,255,0.3);
+        }
+
+        .playlist-header h3 {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #c084fc;
+        }
+
+        .playlist-count {
+            background: #7c3aed;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+
+        .playlist {
+            list-style: none;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px solid rgba(128,0,255,0.1);
+        }
+
+        .playlist-item:hover {
+            background: rgba(128,0,255,0.2);
+        }
+
+        .playlist-item.active {
+            background: linear-gradient(90deg, rgba(128,0,255,0.3), transparent);
+            border-left: 3px solid #c084fc;
+        }
+
+        .playlist-thumb {
+            width: 60px;
+            height: 80px;
+            background: linear-gradient(135deg, #7c3aed, #c084fc);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 0 15px rgba(128,0,255,0.3);
+        }
+
+        .playlist-info {
+            flex: 1;
+        }
+
+        .playlist-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .playlist-duration {
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            margin-top: 25px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 25px;
+            border: 1px solid rgba(128,0,255,0.3);
+        }
+
+        .upload-section h3 {
+            margin-bottom: 15px;
+            color: #c084fc;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(128,0,255,0.5);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: #c084fc;
+            background: rgba(128,0,255,0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: #94a3b8;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .ctrl-btn {
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border: none;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(128,0,255,0.4);
+        }
+
+        .ctrl-btn.danger {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+        }
+
+        /* File List */
+        .file-list {
+            margin-top: 15px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            background: rgba(128,0,255,0.1);
+            padding: 8px 12px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .remove-file {
+            background: #dc2626;
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(128,0,255,0.2);
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a0a2e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #7c3aed;
+            border-radius: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            .logo {
+                font-size: 2rem;
+            }
+            .video-title {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Custom Video Controls */
+        video::-webkit-media-controls-panel {
+            background: linear-gradient(0deg, rgba(0,0,0,0.9), transparent);
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-purple"></div>
+<div class="noise"></div>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            🎬 <span>NOX CINEMA</span> 🎬
+        </div>
+        <div class="tagline">Nonton Film Offline | Gratis | Tanpa Iklan</div>
+        <div class="badges">
+            <div class="badge">🎥 OFFLINE MODE</div>
+            <div class="badge">🚫 NO ADS</div>
+            <div class="badge">💜 PURPLE THEME</div>
+            <div class="badge">📀 100% GRATIS</div>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Player Section -->
+        <div class="player-section">
+            <div class="video-container">
+                <video id="videoPlayer" controls>
+                    <source src="" type="video/mp4">
+                    Browser Anda tidak mendukung video tag.
+                </video>
+            </div>
+            <div class="video-info">
+                <div class="video-title" id="currentTitle">✨ Pilih film dari playlist atau upload videomu</div>
+                <div class="video-meta">
+                    <span>🎬 Klik film di playlist</span>
+                    <span>📤 Upload video sendiri</span>
+                    <span>💜 Gratis selamanya</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Playlist Section -->
+        <div class="playlist-section">
+            <div class="playlist-header">
+                <h3>
+                    🎬 PLAYLIST FILM
+                    <span class="playlist-count" id="movieCount">0</span>
+                </h3>
+            </div>
+            <ul class="playlist" id="playlist">
+                <li style="padding: 50px; text-align: center; color: #94a3b8;">
+                    💜 Belum ada film<br>
+                    Upload video dari HP kamu!
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Upload Section -->
+    <div class="upload-section">
+        <h3>📤 TAMBAH FILM SENDIRI</h3>
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">🎬</div>
+            <div class="upload-text">Klik atau drag & drop file video di sini</div>
+            <div class="upload-text" style="font-size: 0.7rem; margin-top: 8px;">Support: MP4, WebM, MKV, AVI | Tanpa batas ukuran</div>
+            <input type="file" id="fileInput" multiple accept="video/*">
+        </div>
+        <div class="file-list" id="fileList"></div>
+        <div class="controls">
+            <button class="ctrl-btn" id="prevBtn">◀ PREV</button>
+            <button class="ctrl-btn" id="nextBtn">NEXT ▶</button>
+            <button class="ctrl-btn danger" id="clearAllBtn">🗑️ HAPUS SEMUA</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>💜 NOX CINEMA - Nonton Film Offline Gratis Tanpa Iklan 💜</p>
+        <p>Upload video dari HP | Putar kapan saja | Tanpa internet</p>
+        <p style="margin-top: 10px;">© 2024 - Dibuat dengan cinta untuk pecinta film</p>
+    </div>
+</div>
+
+<script>
+    // ============================================
+    // NOX CINEMA - OFFLINE MOVIE PLAYER
+    // Tema Hitam Bercorak Ungu | Gratis | Tanpa Iklan
+    // ============================================
+    
+    // Storage
+    const STORAGE_KEY = 'nox_cinema_videos';
+    let videos = [];
+    let currentIndex = -1;
+    
+    // DOM Elements
+    const videoPlayer = document.getElementById('videoPlayer');
+    const currentTitle = document.getElementById('currentTitle');
+    const playlistEl = document.getElementById('playlist');
+    const movieCount = document.getElementById('movieCount');
+    const fileInput = document.getElementById('fileInput');
+    const uploadArea = document.getElementById('uploadArea');
+    const fileListEl = document.getElementById('fileList');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const clearAllBtn = document.getElementById('clearAllBtn');
+    
+    // Format Duration
+    function formatDuration(seconds) {
+        if (!seconds || isNaN(seconds)) return '--:--';
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+    
+    // Escape HTML
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    // Render Playlist
+    function renderPlaylist() {
+        if (videos.length === 0) {
+            playlistEl.innerHTML = '<li style="padding: 50px; text-align: center; color: #94a3b8;">💜 Belum ada film<br>Upload video dari HP kamu!</li>';
+            movieCount.textContent = '0';
+            return;
+        }
+        
+        movieCount.textContent = videos.length;
+        playlistEl.innerHTML = '';
+        
+        videos.forEach((video, index) => {
+            const li = document.createElement('li');
+            li.className = 'playlist-item';
+            if (index === currentIndex) li.classList.add('active');
+            
+            const ext = video.name.split('.').pop().toLowerCase();
+            let icon = '🎬';
+            if (ext === 'mp4') icon = '🎥';
+            if (ext === 'webm') icon = '🌐';
+            if (ext === 'mkv') icon = '📦';
+            if (ext === 'avi') icon = '💿';
+            
+            li.innerHTML = `
+                <div class="playlist-thumb">${icon}</div>
+                <div class="playlist-info">
+                    <div class="playlist-title">${escapeHtml(video.name)}</div>
+                    <div class="playlist-duration">${video.duration ? formatDuration(video.duration) : 'Durasi: loading...'}</div>
+                </div>
+            `;
+            
+            li.onclick = () => playVideo(index);
+            playlistEl.appendChild(li);
+        });
+    }
+    
+    // Play Video
+    function playVideo(index) {
+        if (index < 0 || index >= videos.length) return;
+        
+        currentIndex = index;
+        const video = videos[currentIndex];
+        
+        videoPlayer.src = video.url;
+        videoPlayer.load();
+        videoPlayer.play().catch(e => console.log('Auto-play need user interaction'));
+        
+        currentTitle.textContent = video.name;
+        renderPlaylist();
+    }
+    
+    // Add Video
+    function addVideoFromFile(file) {
+        if (!file.type.startsWith('video/')) {
+            alert('❌ File bukan video!');
+            return;
+        }
+        
+        const url = URL.createObjectURL(file);
+        const tempVideo = document.createElement('video');
+        tempVideo.preload = 'metadata';
+        
+        tempVideo.onloadedmetadata = () => {
+            const duration = tempVideo.duration;
+            const exists = videos.some(v => v.name === file.name);
+            
+            if (exists) {
+                alert(`⚠️ Film "${file.name}" sudah ada!`);
+                URL.revokeObjectURL(url);
+                return;
+            }
+            
+            videos.push({
+                name: file.name,
+                url: url,
+                duration: duration,
+                type: file.type
+            });
+            
+            saveToLocal();
+            renderPlaylist();
+            updateFileListDisplay();
+            
+            if (videos.length === 1) {
+                playVideo(0);
+            }
+        };
+        
+        tempVideo.src = url;
+    }
+    
+    // Handle Files
+    function handleFiles(files) {
+        const videoFiles = Array.from(files).filter(f => f.type.startsWith('video/'));
+        if (videoFiles.length === 0) {
+            alert('❌ Tidak ada file video yang dipilih!');
+            return;
+        }
+        videoFiles.forEach(file => addVideoFromFile(file));
+    }
+    
+    // Update File List Display
+    function updateFileListDisplay() {
+        if (videos.length === 0) {
+            fileListEl.innerHTML = '';
+            return;
+        }
+        
+        fileListEl.innerHTML = videos.map((v, idx) => `
+            <div class="file-item">
+                <span>🎬 ${escapeHtml(v.name)} (${formatDuration(v.duration)})</span>
+                <button class="remove-file" data-index="${idx}">✕</button>
+            </div>
+        `).join('');
+        
+        document.querySelectorAll('.remove-file').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const index = parseInt(btn.dataset.index);
+                removeVideo(index);
+            };
+        });
+    }
+    
+    // Remove Video
+    function removeVideo(index) {
+        if (index < 0 || index >= videos.length) return;
+        
+        if (videos[index].url && videos[index].url.startsWith('blob:')) {
+            URL.revokeObjectURL(videos[index].url);
+        }
+        
+        videos.splice(index, 1);
+        
+        if (currentIndex === index) {
+            currentIndex = -1;
+            videoPlayer.src = '';
+            currentTitle.textContent = '✨ Pilih film dari playlist atau upload videomu';
+            if (videos.length > 0) {
+                playVideo(0);
+            }
+        } else if (currentIndex > index) {
+            currentIndex--;
+        }
+        
+        saveToLocal();
+        renderPlaylist();
+        updateFileListDisplay();
+    }
+    
+    // Clear All
+    function clearAll() {
+        if (confirm('⚠️ Hapus SEMUA film? Video tidak akan hilang dari HP, hanya dari daftar putar.')) {
+            videos.forEach(v => {
+                if (v.url && v.url.startsWith('blob:')) {
+                    URL.revokeObjectURL(v.url);
+                }
+            });
+            videos = [];
+            currentIndex = -1;
+            videoPlayer.src = '';
+            currentTitle.textContent = '✨ Pilih film dari playlist atau upload videomu';
+            saveToLocal();
+            renderPlaylist();
+            updateFileListDisplay();
+        }
+    }
+    
+    // Prev / Next
+    function prevVideo() {
+        if (videos.length === 0) return;
+        let newIndex = currentIndex - 1;
+        if (newIndex < 0) newIndex = videos.length - 1;
+        playVideo(newIndex);
+    }
+    
+    function nextVideo() {
+        if (videos.length === 0) return;
+        let newIndex = currentIndex + 1;
+        if (newIndex >= videos.length) newIndex = 0;
+        playVideo(newIndex);
+    }
+    
+    // Save to LocalStorage
+    function saveToLocal() {
+        const toSave = videos.map(v => ({
+            name: v.name,
+            url: v.url,
+            duration: v.duration,
+            type: v.type
+        }));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+    }
+    
+    // Load from LocalStorage
+    function loadSaved() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                videos = parsed.filter(v => v.url);
+                renderPlaylist();
+                updateFileListDisplay();
+                if (videos.length > 0) {
+                    playVideo(0);
+                }
+            } catch(e) {
+                console.log('Load error');
+            }
+        }
+    }
+    
+    // Setup Drag & Drop
+    function setupDragDrop() {
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#c084fc';
+            uploadArea.style.background = 'rgba(128,0,255,0.2)';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = 'rgba(128,0,255,0.5)';
+            uploadArea.style.background = 'transparent';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = 'rgba(128,0,255,0.5)';
+            uploadArea.style.background = 'transparent';
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+        
+        uploadArea.onclick = () => fileInput.click();
+        fileInput.onchange = (e) => handleFiles(e.target.files);
+    }
+    
+    // Video metadata untuk durasi
+    videoPlayer.addEventListener('loadedmetadata', () => {
+        if (currentIndex >= 0 && videos[currentIndex]) {
+            const duration = videoPlayer.duration;
+            if (duration && !videos[currentIndex].duration) {
+                videos[currentIndex].duration = duration;
+                saveToLocal();
+                renderPlaylist();
+                updateFileListDisplay();
+            }
+        }
+    });
+    
+    // Auto next
+    videoPlayer.addEventListener('ended', () => {
+        nextVideo();
+    });
+    
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') {
+            e.preventDefault();
+            if (videoPlayer.paused) videoPlayer.play();
+            else videoPlayer.pause();
+        }
+        if (e.code === 'ArrowLeft') {
+            videoPlayer.currentTime -= 10;
+        }
+        if (e.code === 'ArrowRight') {
+            videoPlayer.currentTime += 10;
+        }
+    });
+    
+    // Initialize
+    function init() {
+        loadSaved();
+        setupDragDrop();
+        prevBtn.onclick = prevVideo;
+        nextBtn.onclick = nextVideo;
+        clearAllBtn.onclick = clearAll;
+    }
+    
+    init();
+</script>
+</body>
+</html>
